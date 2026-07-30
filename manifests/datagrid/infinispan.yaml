@@ -1,0 +1,27 @@
+apiVersion: infinispan.org/v1
+kind: Infinispan
+metadata:
+  name: infinispan
+  namespace: datagrid
+spec:
+  replicas: 2
+
+  service:
+    type: DataGrid
+
+  expose:
+    type: Route
+
+  configMapName: datagrid-rhbk-config
+
+  container:
+    env:
+      - name: DATAGRID_RHBK_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: datagrid-rhbk-secret
+            key: client-secret
+
+  security:
+    authorization:
+      enabled: true

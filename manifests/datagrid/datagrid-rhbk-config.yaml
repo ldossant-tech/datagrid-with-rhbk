@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datagrid-rhbk-config
+  namespace: datagrid
+data:
+  infinispan-config.xml: |
+    <infinispan
+        xmlns="urn:infinispan:config:15.0"
+        xmlns:server="urn:infinispan:server:15.0">
+
+      <server xmlns="urn:infinispan:server:15.0">
+        <security>
+          <security-realms>
+
+            <security-realm name="default">
+              <server-identities>
+                <ssl>
+                  <keystore
+                      path="/etc/security/conf/operator-security/keystore.pem"
+                      password=""/>
+                </ssl>
+              </server-identities>
+
+              <token-realm
+                  name="datagrid"
+                  auth-server-url="https://keycloak-service-rhbk.apps.cluster-xjmjv.xjmjv.sandbox5293.opentlc.com:443"
+                  client-id="datagrid-console">
+
+                <oauth2-introspection
+                    introspection-url="https://keycloak-service-rhbk.apps.cluster-xjmjv.xjmjv.sandbox5293.opentlc.com:443/realms/datagrid/protocol/openid-connect/token/introspect"
+                    client-id="datagrid-server"
+                    client-secret="FQTKpgiIonFQRptRf1aOepvZEusLdYbl"
+                    client-ssl-context="default"
+                    host-name-verification-policy="DEFAULT"/>
+
+              </token-realm>
+            </security-realm>
+
+          </security-realms>
+        </security>
+
+        <endpoints>
+          <endpoint
+              socket-binding="default"
+              security-realm="default"/>
+        </endpoints>
+      </server>
+    </infinispan>
