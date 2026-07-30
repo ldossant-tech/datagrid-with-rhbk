@@ -114,9 +114,7 @@ oc apply -f postgresql.yaml
 ## Criar Secret do banco
 
 ```bash
-oc create secret generic keycloak-db-secret \
-  --from-literal=username=testuser \
-  --from-literal=password=testpassword
+oc apply -f keycloak-db-secret.yaml 
 ```
 
 ---
