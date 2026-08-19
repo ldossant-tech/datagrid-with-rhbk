@@ -33,11 +33,11 @@ data:
               <token-realm
                   name="datagrid"
                   principal-claim="preferred_username"
-                  auth-server-url="https://keycloak-service-rhbk.apps.cluster-k2zc4.k2zc4.sandbox513.opentlc.com:443"
+                  auth-server-url="<URL_KEYCLOAK>:443"
                   client-id="datagrid-console">
 
                 <oauth2-introspection
-                    introspection-url="https://keycloak-service-rhbk.apps.cluster-k2zc4.k2zc4.sandbox513.opentlc.com:443/realms/datagrid/protocol/openid-connect/token/introspect"
+                    introspection-url="<URL_KEYCLOAK>:443/realms/<NOME_REALM>/protocol/openid-connect/token/introspect"
                     client-id="datagrid-server"
                     client-ssl-context="default"
                     host-name-verification-policy="DEFAULT">
