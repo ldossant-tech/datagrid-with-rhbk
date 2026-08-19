@@ -273,7 +273,7 @@ oc apply -f datagrid-rhbk-config.yaml
 
 # Atualizar a instância do Data Grid
 
-Adicionar:
+dentro de infinispan.yaml adicione:
 
 ```yaml
 configMapName: datagrid-rhbk-config
