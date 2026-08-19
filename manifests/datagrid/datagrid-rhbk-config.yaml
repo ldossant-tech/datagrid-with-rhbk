@@ -9,6 +9,14 @@ data:
         xmlns="urn:infinispan:config:15.0"
         xmlns:server="urn:infinispan:server:15.0">
 
+      <cache-container name="default">
+        <security>
+          <authorization group-only-mapping="true">
+            <identity-role-mapper/>
+          </authorization>
+        </security>
+      </cache-container>
+
       <server xmlns="urn:infinispan:server:15.0">
         <security>
           <security-realms>
@@ -24,17 +32,24 @@ data:
 
               <token-realm
                   name="datagrid"
-                  auth-server-url="https://keycloak-service-rhbk.apps.cluster-xjmjv.xjmjv.sandbox5293.opentlc.com:443"
+                  principal-claim="preferred_username"
+                  auth-server-url="https://keycloak-service-rhbk.apps.cluster-k2zc4.k2zc4.sandbox513.opentlc.com:443"
                   client-id="datagrid-console">
 
                 <oauth2-introspection
-                    introspection-url="https://keycloak-service-rhbk.apps.cluster-xjmjv.xjmjv.sandbox5293.opentlc.com:443/realms/datagrid/protocol/openid-connect/token/introspect"
+                    introspection-url="https://keycloak-service-rhbk.apps.cluster-k2zc4.k2zc4.sandbox513.opentlc.com:443/realms/datagrid/protocol/openid-connect/token/introspect"
                     client-id="datagrid-server"
-                    client-secret="FQTKpgiIonFQRptRf1aOepvZEusLdYbl"
                     client-ssl-context="default"
-                    host-name-verification-policy="DEFAULT"/>
+                    host-name-verification-policy="DEFAULT">
+                    
+                    <credential-reference
+                        store="credentials"
+                        alias="client-secret"/>
+
+                </oauth2-introspection>
 
               </token-realm>
+
             </security-realm>
 
           </security-realms>
@@ -45,5 +60,6 @@ data:
               socket-binding="default"
               security-realm="default"/>
         </endpoints>
+
       </server>
     </infinispan>

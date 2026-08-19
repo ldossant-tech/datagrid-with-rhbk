@@ -298,6 +298,139 @@ oc apply -f infinispan.yaml
 ```
 
 ---
+# Configuração de Groups no `datagrid-console`
+
+O objetivo desta configuração é fazer com que o **Red Hat Build of Keycloak (RHBK)** inclua os grupos associados ao usuário no **Access Token** emitido para o client `datagrid-console`.
+
+O resultado esperado no token é:
+
+```json
+"groups": [
+  "admin"
+]
+```
+
+## 1. Acessar o Realm
+
+No console administrativo do RHBK, acesse o realm utilizado pela integração com o Data Grid:
+
+```text
+datagrid
+```
+
+## 2. Acessar o client `datagrid-console`
+
+No menu lateral, acesse:
+
+```text
+Clients
+└── datagrid-console
+```
+
+## 3. Acessar o Client Scope dedicado
+
+Dentro do client `datagrid-console`, acesse:
+
+```text
+Client scopes
+```
+
+Selecione o Client Scope dedicado:
+
+```text
+datagrid-console-dedicated
+```
+
+Esse Client Scope é criado automaticamente pelo RHBK especificamente para o client `datagrid-console`.
+
+## 4. Criar o Group Membership Mapper
+
+Dentro do `datagrid-console-dedicated`, acesse:
+
+```text
+Mappers
+└── Configure a new mapper
+```
+
+Selecione o tipo de mapper:
+
+```text
+Group Membership
+```
+
+## 5. Configurar o Mapper
+
+Configure o mapper com os seguintes valores:
+
+| Propriedade             | Valor    |
+| ----------------------- | -------- |
+| **Name**                | `groups` |
+| **Token Claim Name**    | `groups` |
+| **Full group path**     | `Off`    |
+| **Add to ID token**     | `On`     |
+| **Add to access token** | `On`     |
+| **Add to userinfo**     | `On`     |
+
+Caso a versão do RHBK disponibilize a opção:
+
+```text
+Add to token introspection
+```
+
+habilite-a:
+
+```text
+Add to token introspection: On
+```
+
+## 6. Configurar `Full group path`
+
+A opção **Full group path** deve permanecer desabilitada:
+
+```text
+Full group path: Off
+```
+
+Dessa forma, caso o usuário pertença ao grupo `admin`, o Access Token apresentará:
+
+```json
+"groups": [
+  "admin"
+]
+```
+
+Em vez de:
+
+```json
+"groups": [
+  "/admin"
+]
+```
+
+Isso é importante porque o nome do grupo recebido no token deverá corresponder ao nome da **role existente no Data Grid**.
+
+Exemplo:
+
+```text
+RHBK Group
+   admin
+     │
+     ▼
+Access Token
+"groups": ["admin"]
+     │
+     ▼
+Data Grid
+Role: admin
+```
+
+## 7. Salvar a configuração
+
+Após preencher todos os campos, clique em **Save** para salvar o mapper.
+
+A partir desse momento, novos Access Tokens emitidos pelo `datagrid-console` poderão incluir o claim `groups` com os grupos associados ao usuário.
+
+---
 
 # Configuração do Audience Mapper
 
@@ -349,8 +482,6 @@ Criar Realm Roles
 admin
 
 application
-
-observer
 ```
 
 ---
@@ -360,11 +491,9 @@ observer
 Criar:
 
 ```
-datagrid-admin
+admin
 
-datagrid-application
-
-datagrid-observer
+application
 ```
 
 Realizar o Role Mapping correspondente.
@@ -448,7 +577,21 @@ na instância do Infinispan.
 
 # Referências
 
-- Red Hat Data Grid Security Guide
-- Red Hat Build of Keycloak Server Administration Guide
-- OAuth 2.0 Token Introspection (RFC 7662)
-- OpenID Connect Core Specification
+## Referências Oficiais
+
+- [Red Hat Data Grid 8.5 — Data Grid Operator Guide](https://docs.redhat.com/en/documentation/red_hat_data_grid/8.5/html-single/data_grid_operator_guide/index)  
+  Referência para configuração do recurso `Infinispan`, autenticação, Secrets, autorização, roles e permissões no Data Grid Operator.
+
+- [Red Hat Data Grid 8.5 — Token Realms](https://docs.redhat.com/en/documentation/red_hat_data_grid/8.5/html/data_grid_server_guide/security-realms)  
+  Referência para configuração de `token-realm`, autenticação baseada em tokens e `oauth2-introspection`.
+
+- [Red Hat Build of Keycloak 26.6 — Server Administration Guide](https://docs.redhat.com/en/documentation/red_hat_build_of_keycloak/26.6/html-single/server_administration_guide/index)  
+  Referência para configuração de Users, Groups, Roles, Client Scopes, Protocol Mappers e demais recursos administrativos do RHBK.
+
+- [Red Hat Build of Keycloak 26.6 — OIDC Clients, Audience e Token Introspection](https://docs.redhat.com/en/documentation/red_hat_build_of_keycloak/26.6/html/server_administration_guide/assembly-managing-clients_server_administration_guide)  
+  Referência para configuração de clients OIDC, claim `aud`, Audience Mapper e validação de audience durante OAuth 2.0 Token Introspection.
+
+- [Red Hat Data Grid 8.5 — Security Authorization with Role-Based Access Control](https://docs.redhat.com/en/documentation/red_hat_data_grid/8.5/html/data_grid_security_guide/security-authorization)  
+  Referência para RBAC no Data Grid, incluindo roles padrão (`admin`, `deployer`, `application`, `observer` e `monitor`) e suas respectivas permissões.
+
+> **Aviso:** Este repositório é uma recomendação técnica para demonstrar um laboratório de integração entre o Red Hat Data Grid e o Red Hat Build of Keycloak (RHBK), utilizando autenticação OIDC, OAuth 2.0 Token Introspection e controle de acesso baseado em roles. Ele não substitui a documentação oficial da Red Hat. Para implantações em ambiente produtivo, siga sempre as documentações oficiais, a matriz de suporte vigente, as políticas internas de segurança e as recomendações aplicáveis às versões do Red Hat Data Grid, RHBK, OpenShift e Operators instalados.

@@ -20,7 +20,7 @@ spec:
       key: password
 
   hostname:
-    hostname: https://keycloak-service-rhbk.apps.cluster-fmkrs.fmkrs.sandbox3881.opentlc.com
+    hostname: https://keycloak-service-rhbk.apps.cluster-k2zc4.k2zc4.sandbox513.opentlc.com
 
   proxy:
     headers: xforwarded
