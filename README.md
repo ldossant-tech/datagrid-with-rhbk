@@ -375,8 +375,6 @@ Criar:
 admin
 
 application
-
-observer
 ```
 
 Associar cada usuário ao Group correspondente.
