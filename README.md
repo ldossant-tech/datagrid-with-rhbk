@@ -279,16 +279,8 @@ Adicionar:
 configMapName: datagrid-rhbk-config
 ```
 
-Adicionar:
-
 ```yaml
-container:
-  env:
-  - name: DATAGRID_RHBK_CLIENT_SECRET
-    valueFrom:
-      secretKeyRef:
-        name: datagrid-rhbk-secret
-        key: client-secret
+    credentialStoreSecretName: datagrid-rhbk-secret
 ```
 
 Aplicar:
