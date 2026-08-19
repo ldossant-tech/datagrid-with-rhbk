@@ -14,10 +14,10 @@ spec:
   expose:
     type: Route
 
-  configMapName: datagrid-rhbk-config
+  # configMapName: datagrid-rhbk-config
 
   security:
     authorization:
       enabled: true
 
-    credentialStoreSecretName: datagrid-rhbk-secret
+    # credentialStoreSecretName: datagrid-rhbk-secret
